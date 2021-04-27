@@ -19,6 +19,9 @@ const validation = (data) => {
     return error
 }
 
+app.use(express.static(__dirname+'/public'))
+
+
 app.get('/api/courses/:id',(req,res) =>{
   const requested_course = data.course.find((c) => c.id === parseInt(req.params.id))
   if (!requested_course){
