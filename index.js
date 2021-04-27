@@ -3,6 +3,7 @@ const app=express()
 const cors=require('cors')
 app.use(cors())
 app.use(express.json())
+app.use(express.static('./public'))
 const data= require("./courses.json")
 const student_data=require('./students.json')
 const Joi = require("joi")
@@ -18,11 +19,6 @@ const validation = (data) => {
     const { error } = schema.validate(data)
     return error
 }
-
-const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-app.use(express.static('./public'))
 
 app.get('/api/courses/:id',(req,res) =>{
   const requested_course = data.course.find((c) => c.id === parseInt(req.params.id))
