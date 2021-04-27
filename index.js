@@ -1,9 +1,12 @@
 const express=require('express')
 const app=express()
+const cors=require('cors')
+app.use(cors())
 app.use(express.json())
 const data= require("./courses.json")
 const student_data=require('./students.json')
 const Joi = require("joi")
+
 const fs = require("fs")
 const len= Object.keys(data.course).length
 const validation = (data) => {
@@ -20,7 +23,7 @@ const validation = (data) => {
 app.get('/api/courses/:id',(req,res) =>{
   const requested_course = data.course.find((c) => c.id === parseInt(req.params.id))
   if (!requested_course){
-    return res.status(404).send("No Such Course")
+    return res.send("No Such Course")
   } 
   res.send(requested_course)
 })
@@ -31,7 +34,7 @@ app.get('/api/courses/',(req,res) =>{
 app.post('/web/courses/create',(req,res) => {
     const err=validation(req.body)
     if (err){
-        return res.status(400).send(err.details[0].message)
+        return res.send(err.details[0].message)
     }
     else{
         const course={
@@ -53,13 +56,13 @@ app.post('/web/courses/create',(req,res) => {
 app.put('/web/courses/:id',(req,res) => {
     const requested_course = data.course.find((c) => c.id === parseInt(req.params.id))
   if (!requested_course){
-    return res.status(404).send("No Such Course")
+    return res.send("No Such Course")
   } 
   req.body.name=(req.body.name) ? req.body.name : requested_course.name
   req.body.code=(req.body.code) ? req.body.code : requested_course.code
     const err=validation(req.body)
     if (err){
-        return res.status(400).send(err.details[0].message)
+        return res.send(err.details[0].message)
     }
     else{
         const course={
@@ -81,10 +84,11 @@ app.put('/web/courses/:id',(req,res) => {
 app.delete('/api/courses/:id',(req, res) => {
     const requested_course = data.course.find((c) => c.id === parseInt(req.params.id))
   if (!requested_course){
-    return res.status(404).send("No Such Course")
+    return res.send("No Such Course")
   } 
   
-    data.course.splice(parseInt(req.params.id)-1)
+    data.course.splice(data.course.indexOf(requested_course),1)
+    console.log(data.course)
 
     fs.writeFile("courses.json", JSON.stringify(data), (err) => {
       if (err) {
@@ -111,7 +115,7 @@ app.delete('/api/courses/:id',(req, res) => {
   app.get('/api/students/:id',(req,res) =>{
     const requested_student = student_data.student.find((s) => s.id === parseInt(req.params.id))
     if (!requested_student){
-      return res.status(404).send("No Such student")
+      return res.send("No Such student")
     } 
     res.send(requested_student)
   })
@@ -123,7 +127,7 @@ app.delete('/api/courses/:id',(req, res) => {
     req.body.name=req.body.name.trim()
       const err=validation_student(req.body)
       if (err){
-          return res.status(400).send(err.details[0].message)
+          return res.send(err.details[0].message)
       }
       else{
           const student={
@@ -142,16 +146,16 @@ app.delete('/api/courses/:id',(req, res) => {
       res.send(student_data.student)
   })
   app.put('/web/students/:id',(req,res) => {
-    req.body.name=req.body.name.trim()
     const requested_student = student_data.student.find((s) => s.id === parseInt(req.params.id))
     if (!requested_student){
-      return res.status(404).send("No Such student")
+      return res.send("No Such student")
     } 
     req.body.name=(req.body.name) ? req.body.name : requested_student.name
     req.body.code=(req.body.code) ? req.body.code : requested_student.code
+    req.body.name=req.body.name.trim()
       const err=validation_student(req.body)
       if (err){
-          return res.status(400).send(err.details[0].message)
+          return res.send(err.details[0].message)
       }
       else{
           const student={
@@ -172,10 +176,10 @@ app.delete('/api/courses/:id',(req, res) => {
   app.delete('/api/students/:id',(req, res) => {
     const requested_student = student_data.student.find((s) => s.id === parseInt(req.params.id))
     if (!requested_student){
-      return res.status(404).send("No Such student")
+      return res.send("No Such student")
     } 
     
-      student_data.student.splice(parseInt(req.params.id)-1)
+      student_data.student.splice(student_data.student.indexOf(requested_student),1)
   
       fs.writeFile("students.json", JSON.stringify(student_data), (err) => {
         if (err) {
@@ -187,8 +191,4 @@ app.delete('/api/courses/:id',(req, res) => {
     
       res.send(student_data.student)
     })
-const host = '0.0.0.0';
-const port = process.env.PORT || 3000;
-app.listen(port, host, function() {
-    console.log("Server started.......");
-  });
+app.listen(3000,() => {console.log('listening on port 3000...')})
