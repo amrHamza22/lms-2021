@@ -19,8 +19,10 @@ const validation = (data) => {
     return error
 }
 
-app.use(express.static(__dirname+'/public'))
-
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(express.static('./public'))
 
 app.get('/api/courses/:id',(req,res) =>{
   const requested_course = data.course.find((c) => c.id === parseInt(req.params.id))
