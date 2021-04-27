@@ -6,7 +6,6 @@ app.use(express.json())
 const data= require("./courses.json")
 const student_data=require('./students.json')
 const Joi = require("joi")
-
 const fs = require("fs")
 const len= Object.keys(data.course).length
 const validation = (data) => {
@@ -191,8 +190,4 @@ app.delete('/api/courses/:id',(req, res) => {
     
       res.send(student_data.student)
     })
-const host = '0.0.0.0';
-const port = process.env.PORT || 3000;
-app.listen(port, host, function() {
-    console.log("Server started.......");
-  });
+app.listen(3000,() => {console.log('listening on port 3000...')})
