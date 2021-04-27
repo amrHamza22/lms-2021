@@ -151,7 +151,7 @@
 </body>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <script>
-  base_url='https://cors-anywhere.herokuapp.com/https://lms-hamza2021.herokuapp.com/'
+  base_url='https://lms-hamza2021.herokuapp.com/'
     document.getElementById('getCourse').addEventListener('click',async ()=>{
         const response = await axios.get(base_url+'api/courses/'+ document.getElementById('course').value)
         document.getElementById('res').innerHTML=JSON.stringify(response.data)
